@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import SqlTestService from "./../services/sql-test.service"
+import dateHelpers from "../helpers/dateHelpers";
 
 function renderTable(data) {
   const tableHeadings = Object.keys(data[0])
@@ -61,6 +62,34 @@ function renderSchemas(questionSchemas) {
   });
 }
 
+function renderCheckedAnswerResult(correct, startTime, currentTime, endTime) {
+  if(correct && endTime) {
+    const timeTaken = dateHelpers.differenceInDateTimeInMins(endTime, startTime)
+    return (
+      <div>
+        <div className={"alert alert-success"}>
+          <h4>Correct!</h4>
+          <p>Minutes Taken: {timeTaken}</p>
+        </div>
+      </div>
+    )
+  } else if (!correct && currentTime) {
+    const timeTaken = dateHelpers.differenceInDateTimeInMins(currentTime, startTime)
+    return (
+      <div>
+        <div className={"alert alert-danger"}>
+          <h4>Incorrect</h4>
+          <p>Minutes elapsed: {timeTaken}</p>
+        </div>
+      </div>
+    )
+  } else {
+    return (
+      <div></div>
+    )
+  }
+}
+
 class SqlTest extends Component {
   constructor(props) {
     super(props);
@@ -70,10 +99,13 @@ class SqlTest extends Component {
     
     this.state = {
       query: "",
-      result: "...",
+      result: "",
       question: '',
       schemas: [],
-      correct: ''
+      correct: null,
+      startTime: new Date(),
+      currentTime: null,
+      endTime: null
     }
   }
   
@@ -107,9 +139,18 @@ class SqlTest extends Component {
   }
   
   checkAnswer() {
+    // returns true or false only
     SqlTestService.checkAnswer(this.state.query).then(response => {
+      if(response) {
+        this.setState({
+          correct: response.data,
+          currentTime: new Date(),
+          endTime: new Date()
+        })
+      }
       this.setState({
-        correct: response.data
+        correct: response.data,
+        currentTime: new Date(),
       })
     })
   }
@@ -142,7 +183,7 @@ class SqlTest extends Component {
           <div className="col-md-6">
             
             <form onSubmit={this.executeQuery}>
-              <label htmlFor="sqlInput">Input:</label>
+              <label htmlFor="sqlInput"><h4>Input:</h4></label>
               <div className="form-floating">
                 <textarea 
                   className="form-control" 
@@ -162,8 +203,17 @@ class SqlTest extends Component {
                 {renderResult(this.state.result)}
               </div>
             </div>
+            
             <button type="button" className="btn btn-primary" onClick={this.checkAnswer}>Submit Response</button>
+            
             <p>{this.state.correct}</p>
+            
+            {renderCheckedAnswerResult(
+              this.state.correct,
+              this.state.startTime,
+              this.state.currentTime,
+              this.state.endTime
+            )}
           </div>
         </div>
       </div>
