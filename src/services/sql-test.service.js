@@ -1,7 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_URL = "http://localhost:53416/api/sqlTest/";
+const API_URL = "https://alb-be.herokuapp.com/api/sqlTest/";
 
 class sqlTestService {
   executeQuery(query) {
