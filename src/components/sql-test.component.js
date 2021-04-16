@@ -90,6 +90,22 @@ function renderCheckedAnswerResult(correct, startTime, currentTime, endTime) {
   }
 }
 
+function renderComplete(complete) {
+  if(complete) {
+    return (
+      <div>
+        <div className={"alert alert-success"}>
+          <h4>Successfully submitted</h4>
+        </div>
+      </div>
+    )
+  } else {
+    return (
+      <div></div>
+    )
+  }
+}
+
 class SqlTest extends Component {
   constructor(props) {
     super(props);
@@ -107,7 +123,7 @@ class SqlTest extends Component {
       startTime: new Date(),
       currentTime: null,
       endTime: null,
-      complete: false
+      complete: null
     }
   }
   
@@ -148,10 +164,18 @@ class SqlTest extends Component {
   }
 
   submitAnswer() {
-    SqlTestService.submitAnswer(this.state).then(response => {
-      this.setState({
-        complete: true
-      })
+    SqlTestService.submitAnswer(
+      this.state.startTime,
+      this.state.endTime,
+      this.state.query,
+      this.state.correct
+    ).then(response => {
+      console.log('lmao', response)
+      if(response.status === 200) {
+        this.setState({
+          complete: true
+        })
+      }
     })
   }
   
@@ -204,9 +228,9 @@ class SqlTest extends Component {
               </div>
             </div>
             
-            <button type="button" className="btn btn-primary" onclick={this.submitAnswer()}>Submit Response</button>
-            
-            <p>{this.state.correct}</p>
+            <button type="button" className="btn btn-primary" onClick={this.submitAnswer}>Submit Response</button>
+
+            {renderComplete(this.state.complete)}
             
             {renderCheckedAnswerResult(
               this.state.correct,

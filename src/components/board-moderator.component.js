@@ -7,7 +7,8 @@ export default class BoardModerator extends Component {
     super(props);
 
     this.state = {
-      content: ""
+      content: "",
+      results: []
     };
   }
 
@@ -15,7 +16,8 @@ export default class BoardModerator extends Component {
     UserService.getModeratorBoard().then(
       response => {
         this.setState({
-          content: response.data
+          content: response.data.message,
+          results: response.data.results || []
         });
       },
       error => {
