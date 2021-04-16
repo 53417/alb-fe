@@ -26,7 +26,7 @@ export function register(config) {
               'worker. To learn more, visit https://bit.ly/CRA-PWA'
           );
         });
-      } else 
+      } else {
         registerValidSW(swUrl, config);
       }
     });
