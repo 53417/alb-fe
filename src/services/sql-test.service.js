@@ -17,13 +17,6 @@ class sqlTestService {
         headers: authHeader()
       })
   }
-  checkAnswer(query) {
-    return axios
-      .get(API_URL + 'checkAnswer', {
-        headers: authHeader(),
-        params: { query }
-      })
-  }
 }
 
 export default new sqlTestService();

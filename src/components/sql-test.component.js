@@ -95,7 +95,6 @@ class SqlTest extends Component {
     super(props);
     this.onChangeSqlQuery = this.onChangeSqlQuery.bind(this);
     this.executeQuery = this.executeQuery.bind(this);
-    this.checkAnswer = this.checkAnswer.bind(this);
     
     this.state = {
       query: "",
@@ -128,29 +127,19 @@ class SqlTest extends Component {
       }
       if( typeof response.data === 'object') {
         this.setState({
-          result: response.data
+          result: response.data.queryResult,
+          correct: response.data.correct,
+          currentTime: new Date()
         })
+        if(response.data.correct) {
+          this.setState({
+            endTime: new Date()
+          })
+        }
       }
     }, error => {
       this.setState({
         result: error.toString()
-      })
-    })
-  }
-  
-  checkAnswer() {
-    // returns true or false only
-    SqlTestService.checkAnswer(this.state.query).then(response => {
-      if(response) {
-        this.setState({
-          correct: response.data,
-          currentTime: new Date(),
-          endTime: new Date()
-        })
-      }
-      this.setState({
-        correct: response.data,
-        currentTime: new Date(),
       })
     })
   }
@@ -204,7 +193,7 @@ class SqlTest extends Component {
               </div>
             </div>
             
-            <button type="button" className="btn btn-primary" onClick={this.checkAnswer}>Submit Response</button>
+            <button type="button" className="btn btn-primary" onClick={this.SOMETHING}>Submit Response</button>
             
             <p>{this.state.correct}</p>
             
