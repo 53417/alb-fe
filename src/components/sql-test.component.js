@@ -95,6 +95,7 @@ class SqlTest extends Component {
     super(props);
     this.onChangeSqlQuery = this.onChangeSqlQuery.bind(this);
     this.executeQuery = this.executeQuery.bind(this);
+    this.submitAnswer = this.submitAnswer.bind(this)
     
     this.state = {
       user: this.props,
@@ -145,10 +146,14 @@ class SqlTest extends Component {
       })
     })
   }
-  
-  // submitAnswer() {
-  //   SqlTestService.submitAnswer()
-  // }
+
+  submitAnswer() {
+    SqlTestService.submitAnswer(this.state).then(response => {
+      this.setState({
+        complete: true
+      })
+    })
+  }
   
   onChangeSqlQuery(e) {
     this.setState({query: e.target.value})
@@ -199,7 +204,7 @@ class SqlTest extends Component {
               </div>
             </div>
             
-            <button type="button" className="btn btn-primary">Submit Response</button>
+            <button type="button" className="btn btn-primary" onclick={this.submitAnswer()}>Submit Response</button>
             
             <p>{this.state.correct}</p>
             

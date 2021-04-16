@@ -8,13 +8,20 @@ class sqlTestService {
     return axios
       .get(API_URL + 'executeQuery', { 
         headers: authHeader(), 
-        params: { query }
+        params: query
       })
   }
   getQuestion() {
     return axios
       .get(API_URL + 'getQuestion', {
         headers: authHeader()
+      })
+  }
+  submitAnswer(state) {
+    return axios
+      .get(API_URL + 'executeQuery', {
+        headers: authHeader(),
+        params: state
       })
   }
 }
